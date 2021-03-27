@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import app, { firestore } from 'firebase/app'
 import { connect } from 'react-redux'
 import { withFirebase } from '../../firebase'
 import { createMuiTheme, Dialog, Box, Divider, Button, CircularProgress } from '@material-ui/core'
@@ -132,7 +133,8 @@ class AddFlight extends Component {
           origin: this.getIata(origin),
           destination: this.getIata(destination),
           date: moment(date).startOf('day').toDate().toString(),
-          poster: userRef
+          poster: userRef,
+          voters: firestore.FieldValue.arrayUnion(this.props.userId)
         })
         await this.props.firebase.addPost(this.props.userId, flightRef)
 

@@ -10,11 +10,18 @@ const styles = {
 }
 
 const Overlay = (props) => {
-  return (
-    props.show ?
-      <Box style={{ ...styles.overlay, ...props.style, ...props.styleShown, opacity: 1 }} />
-      : <Box style={{ ...styles.overlay, ...props.style, ...props.styleHidden, opacity: 0 }} />
-  )
+  return (renderBox(props));
+}
+
+const renderBox = (props) => {
+  return <Box style={{ ...styles.overlay, ...props.style, ...props.styleShown, opacity: props.show ? 1 : 0 }} >
+    </Box>
+}
+
+const editFlight = (props) => {
+  // props.editFlight = true;
+  console.log(props);
+  // this.setProps({ editFlight : true })
 }
 
 Overlay.propTypes = {

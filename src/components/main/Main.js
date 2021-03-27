@@ -20,7 +20,7 @@ class Main extends Component {
   render() {
     return (
       <div >
-        <Header />
+        <Header search={(searchString) => this.props.setSearch(searchString)}/>
         <div style={{ ...styles.container, backgroundColor: this.props.backgroundColor }}>
           {this.props.children}
         </div>
@@ -40,7 +40,8 @@ class Main extends Component {
 
 Main.propTypes = {
   actions: PropTypes.arrayOf(PropTypes.object),
-  backgroundColor: PropTypes.string
+  backgroundColor: PropTypes.string,
+  setSearch : PropTypes.func
 }
 
 export default Main

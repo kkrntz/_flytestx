@@ -120,7 +120,7 @@ class Header extends Component {
         <ButtonBase style={styles.logoContainer} onClick={this.logoPress.bind(this)}>
           Logo
         </ButtonBase>
-        <HeaderSearch style={styles.search} />
+        <HeaderSearch style={styles.search} search={(searchString) => this.props.search(searchString)} />
         <div style={styles.buttonContainer}>
           <HeaderPageButtons {...this.props} />
           <IconButton>
