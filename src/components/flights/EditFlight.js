@@ -79,10 +79,10 @@ class EditFlight extends Component {
     let loadedDetail = {
       id: details.id,
       date: new Date(details.date),
-      orgCountry : this.getCountry(details.origin),
-      orgAirport : this.getAirport(details.origin),
-      destCountry : this.getCountry(details.destination),
-      destAirport : this.getAirport(details.destination)
+      orgCountry : details.orgCountry,
+      orgAirport : details.orgAirport,
+      destCountry : details.destCountry,
+      destAirport : details.destAirport
     }
 
     this.setState(loadedDetail)

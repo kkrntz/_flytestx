@@ -9,6 +9,7 @@ import { Icon } from '@mdi/react'
 import { mdiPlus } from '@mdi/js'
 import { Main } from '../'
 import { FlightCard, AddFlight } from '.'
+import airport from 'airport-codes'
 
 class Flights extends Component {
 
@@ -58,7 +59,11 @@ class Flights extends Component {
           current : flight.data().current,
           origin : flight.data().origin,
           destination : flight.data().destination,
-          date: flight.data().date
+          date: flight.data().date,
+          orgCountry : this.getCountry(flight.data().origin),
+          orgAirport : this.getAirport(flight.data().origin),
+          destCountry : this.getCountry(flight.data().destination),
+          destAirport : this.getAirport(flight.data().destination)
         }
         return flightData
       })
@@ -70,7 +75,9 @@ class Flights extends Component {
         if(!queryString)
           return true
         
-        return this.compareString(queryString, flight.origin) || this.compareString(queryString, flight.destination);
+        return this.compareString(queryString, flight.origin) || this.compareString(queryString, flight.destination)
+                || this.compareString(queryString, flight.orgCountry) || this.compareString(queryString, flight.orgAirport)
+                || this.compareString(queryString, flight.destCountry) || this.compareString(queryString, flight.destAirport);
       })
       .map(flight => {
         return <FlightCard details={flight} onClick={(flight) => this.setVote(flight)} />
@@ -84,6 +91,15 @@ class Flights extends Component {
 
   startSearch(searchString){
     this.setState({ searchString : searchString, loading : true });
+  }
+
+
+  getCountry(iata) {
+    return airport.findWhere({ iata: iata }).get('country')
+  }
+
+  getAirport(iata){
+    return airport.findWhere({ iata: iata }).get('name')
   }
 
   async setVote(flight){

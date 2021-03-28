@@ -3,13 +3,15 @@ import { withRouter } from 'react-router-dom'
 import { withFirebase } from '../../firebase'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Button, IconButton, ButtonBase, Menu, MenuItem, Avatar } from '@material-ui/core'
+import { Button, IconButton, ButtonBase, Menu, MenuItem, Avatar, Popover } from '@material-ui/core'
 import { HeaderSearch } from '.'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import { grey } from '@material-ui/core/colors'
 import Notifications from '@material-ui/icons/Notifications'
-import MoreVert from '@material-ui/icons/MoreVert'
+import MoreVert from '@material-ui/icons/MoreVert';
+import ReorderIcon from '@material-ui/icons/Reorder';
 import { PATHS } from '../../constants';
-import { accountAction, authAction } from '../../actions';
+import MomentUtils from "@date-io/moment"
 
 const styles = {
   container: {
@@ -109,18 +111,89 @@ const OptionsPopOver = (props) => {
   )
 }
 
+// Trying to implement filters but undecided on what UI to implement
+
+const FiltersPopOver = (props) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+    props.onClick()
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  }
+
+  const applyFilter = () => {
+    props.onLogout()
+  }
+
+
+  return (
+    <div>
+      <IconButton onClick={handleClick}>
+        <ReorderIcon />
+      </IconButton>
+      <Popover
+        id={props.id}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+
+        <div style={{ display: 'flex' }}>
+          <div>
+            Start Date
+          </div>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <DatePicker
+              style={{ margin: "10px 0px" }}
+              format='LL'
+              value={props.filters.start_date}
+              onChange={(value) => console.log("here")}
+            />
+          </MuiPickersUtilsProvider>
+        </div>
+      </Popover>
+    </div>
+  )
+}
+
 class Header extends Component {
   state = {
-    options: false
+    options: false,
+    filters : false,
+    filterValues : {
+      start_date : null,
+      end_date : null
+    }
   }
 
   render() {
+    const id = this.state.filters ? 'simple-popover' : undefined;
+    const { filterValues } = this.state
     return (
       <div style={styles.container}>
         <ButtonBase style={styles.logoContainer} onClick={this.logoPress.bind(this)}>
           Logo
         </ButtonBase>
         <HeaderSearch style={styles.search} search={(searchString) => this.props.search(searchString)} />
+        <FiltersPopOver
+          id={id}
+          open={this.state.filters}
+          onClick = {() => this.setState({ filters:true })}
+          onFilter={(filters) => this.props.search(filters)}
+          filters={filterValues}
+        />
         <div style={styles.buttonContainer}>
           <HeaderPageButtons {...this.props} />
           <IconButton>
